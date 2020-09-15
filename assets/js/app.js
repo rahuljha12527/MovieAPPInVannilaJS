@@ -11,11 +11,17 @@ const inputElement = document.querySelector("#inputValue");
 
 const movieSearchable = document.querySelector("#movies-searchable");
 
+   
+
 function movieSection(movies) {
   return movies.map((movie) => {
-    return ` 
+
+    if(movie.poster_path!==null){
+      return ` 
       <img src=${IMAGE_URL + movie.poster_path} data-movie-id=${movie.id} />
       `;
+    }
+   
   });
 }
 
@@ -34,6 +40,15 @@ function createMoviesContainer(movies) {
   return movieElement;
 }
 
+function renderSearchMovies(data){
+  movieSearchable.innerHTML='';
+  const movies=data.results;
+  const movieBlock=createMoviesContainer(movies);
+  movieSearchable.appendChild(movieBlock);
+  console.log("Data: ", data);
+}
+
+
 buttonElement.onclick = function (event) {
   event.preventDefault();
   const value = inputElement.value;
@@ -41,15 +56,19 @@ buttonElement.onclick = function (event) {
   const newUrl = url + "&query=" + value;
   fetch(newUrl)
     .then((res) => res.json())
-    .then((data) => {
-      const movies=data.results;
-      const movieBlock=createMoviesContainer(movies);
-      movieSearchable.appendChild(movieBlock);
-      console.log("Data: ", data);
-    })
+    .then(renderSearchMovies)
     .catch((error) => {
       console.log("Error: ", error);
     });
-
+    inputElement.value='';
   console.log("Value:", value);
 };
+
+document.onclick=function(event){
+  const target=event.target;
+
+  
+  console.log('Hello World');
+}
+
+
